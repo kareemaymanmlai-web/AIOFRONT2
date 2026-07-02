@@ -12,11 +12,13 @@ export function LoginPage() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedRole = new URLSearchParams(location.search).get("role") || "tenant-admin";
+  const params = new URLSearchParams(location.search);
+  const hasRoleParam = params.has("role");
+  const selectedRole = params.get("role") || "end-user";
   const [form, setForm] = useState({ email: "admin@subpay.test", password: "12345678", role: selectedRole });
   const [loading, setLoading] = useState(false);
 
-  if (user) return <Navigate to={location.state?.from || `/${user.role}`} replace />;
+  if (user && !hasRoleParam) return <Navigate to={location.state?.from || `/${user.role}`} replace />;
 
   const submit = async (event) => {
     event.preventDefault();

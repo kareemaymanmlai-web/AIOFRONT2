@@ -9,6 +9,7 @@ import { RolePicker } from "./pages/RolePicker";
 import { SuperAdminApp } from "./pages/SuperAdminApp";
 import { TenantAdminApp } from "./pages/TenantAdminApp";
 import { api } from "./services/api";
+import { authService } from "./services/authService";
 
 export function App() {
   return (
@@ -33,13 +34,14 @@ export function App() {
 }
 
 function LandingRedirect() {
-  const { user } = useAuth();
-  if (user) return <Navigate to={`/${user.role}`} replace />;
   return <RolePicker roles={[
     { id: "end-user", label: "End User", subtitle: "Employee account", company: "TechCorp Egypt" },
     { id: "tenant-admin", label: "Tenant Admin", subtitle: "Company admin", company: "TechCorp Egypt" },
     { id: "super-admin", label: "Super Admin", subtitle: "Platform admin", company: "Sub Pay Platform" }
-  ]} onSelect={(role) => window.location.assign(`/login?role=${role}`)} />;
+  ]} onSelect={(role) => {
+    authService.logout();
+    window.location.assign(`/login?role=${role}`);
+  }} />;
 }
 
 function DataGate({ app }) {
